@@ -66,7 +66,7 @@ export function GraphRenderer({ type }: GraphRendererProps) {
       </div>
 
       <div className="flex min-h-[340px] items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-white/50 p-6">
-        {type === "euclid-gcd" && <EuclidGCD step={step} setStep={setStep} />}
+        {type === "euclid-gcd" && <EuclidGCD step={step} />}
         {type === "linear-flow" && <LinearFlow step={step} />}
         {type === "cartesian-comparison" && <CartesianComparison step={step} />}
         {type === "sorting-animation" && <SortingViz step={step} />}
@@ -116,7 +116,7 @@ export function GraphRenderer({ type }: GraphRendererProps) {
   );
 }
 
-function EuclidGCD({ step, setStep }: { step: number; setStep: (s: number) => void }) {
+function EuclidGCD({ step }: { step: number }) {
   const steps = [
     { a: 48, b: 18, remainder: 12 },
     { a: 18, b: 12, remainder: 6 },
@@ -132,25 +132,25 @@ function EuclidGCD({ step, setStep }: { step: number; setStep: (s: number) => vo
         <React.Fragment key={i}>
           <div
             className={`flex items-center gap-4 rounded-xl border p-4 transition-all duration-500 ${
-              step.isResult
+              s.isResult
                 ? "border-teal-200 bg-teal-50 ring-4 ring-teal-50"
                 : "border-gray-200 bg-white shadow-sm"
             }`}
           >
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold uppercase text-gray-400">a</span>
-              <span className={`text-xl font-mono font-bold ${step.isResult ? "text-teal-700" : "text-gray-700"}`}>
-                {step.a}
+              <span className={`text-xl font-mono font-bold ${s.isResult ? "text-teal-700" : "text-gray-700"}`}>
+                {s.a}
               </span>
             </div>
             <div className="h-8 w-[1px] bg-gray-100"></div>
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold uppercase text-gray-400">b</span>
-              <span className="text-xl font-mono font-bold text-gray-700">{step.b}</span>
+              <span className="text-xl font-mono font-bold text-gray-700">{s.b}</span>
             </div>
-            {step.isResult && (
+            {s.isResult && (
               <div className="ml-4 rounded-full bg-teal-500 px-3 py-1 text-xs font-bold text-white shadow-lg shadow-teal-200">
-                GCD Found: {step.a}
+                GCD Found: {s.a}
               </div>
             )}
           </div>
@@ -168,25 +168,37 @@ function EuclidGCD({ step, setStep }: { step: number; setStep: (s: number) => vo
   );
 }
 
-function LinearFlow() {
+function LinearFlow({ step }: { step: number }) {
+  const activeIndex = Math.min(step, 2);
+
   return (
     <div className="flex items-center gap-4">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-white shadow-lg shadow-teal-200">
+      <div className={`flex h-12 w-12 items-center justify-center rounded-full transition ${
+        activeIndex >= 0
+          ? "bg-teal-500 text-white shadow-lg shadow-teal-200"
+          : "border-2 border-gray-200 text-gray-300"
+      }`}>
         <div className="h-4 w-4 rounded-sm border-2 border-white"></div>
       </div>
-      <div className="h-[2px] w-12 bg-teal-500/20"></div>
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-teal-500 text-teal-500">
+      <div className={`h-[2px] w-12 ${activeIndex >= 1 ? "bg-teal-500/40" : "bg-gray-200"}`}></div>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-full border-2 transition ${
+        activeIndex >= 1 ? "border-teal-500 text-teal-500" : "border-gray-200 text-gray-300"
+      }`}>
         <div className="h-4 w-4 rounded-full border-2 border-teal-500"></div>
       </div>
-      <div className="h-[2px] w-12 bg-gray-200"></div>
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-300">
+      <div className={`h-[2px] w-12 ${activeIndex >= 2 ? "bg-teal-500/40" : "bg-gray-200"}`}></div>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-full border-2 transition ${
+        activeIndex >= 2 ? "border-teal-500 text-teal-500" : "border-gray-200 text-gray-300"
+      }`}>
         <div className="h-4 w-4 rotate-45 border-2 border-gray-200"></div>
       </div>
     </div>
   );
 }
 
-function CartesianComparison() {
+function CartesianComparison({ step }: { step: number }) {
+  const progress = Math.min(step + 1, 6) / 6;
+
   return (
     <div className="relative h-64 w-full max-w-md">
       {/* Y-axis */}
@@ -202,7 +214,10 @@ function CartesianComparison() {
           fill="none"
           stroke="#0d9488"
           strokeWidth="2"
-          className="transition-all duration-1000"
+          pathLength={1}
+          strokeDasharray={1}
+          strokeDashoffset={1 - progress}
+          className="transition-all duration-700"
         />
         {/* O(n^2) */}
         <path
@@ -234,9 +249,8 @@ function CartesianComparison() {
 function SortingViz({ step }: { step: number }) {
   const arr = [40, 70, 10, 50, 30, 60, 20];
   const n = arr.length;
-  let sortedArr = [...arr];
-  let minIdx = -1;
-  let currentI = Math.min(step, n - 1);
+  const sortedArr = [...arr];
+  const currentI = Math.min(step, n - 1);
   
   for (let i = 0; i < currentI; i++) {
     let m = i;
@@ -402,7 +416,7 @@ function WeightedGraph({ step }: { step: number }) {
       </svg>
       <div className="absolute bottom-0 left-0 right-0 text-center">
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-          Prim's: {step === 0 ? "Select Start Node" : `Step ${step}: Adding edge to MST`}
+          Prim&apos;s: {step === 0 ? "Select Start Node" : `Step ${step}: Adding edge to MST`}
         </p>
       </div>
     </div>
@@ -565,7 +579,7 @@ function InterpolationSearch({ step }: { step: number }) {
 function BubbleSort({ step }: { step: number }) {
   const arr = [64, 34, 25, 12, 22, 11, 90];
   const n = arr.length;
-  let sorted = [...arr];
+  const sorted = [...arr];
   let comparing = [-1, -1];
   
   let s = 0;
@@ -616,11 +630,11 @@ function BubbleSort({ step }: { step: number }) {
 function InsertionSort({ step }: { step: number }) {
   const arr = [64, 34, 25, 12, 22, 11, 90];
   const n = arr.length;
-  let sorted = [...arr];
-  let keyIdx = Math.min(step + 1, n - 1);
+  const sorted = [...arr];
+  const keyIdx = Math.min(step + 1, n - 1);
   
   for (let i = 1; i <= Math.min(step, n - 1); i++) {
-    let key = sorted[i];
+    const key = sorted[i];
     let j = i - 1;
     while (j >= 0 && sorted[j] > key) {
       sorted[j + 1] = sorted[j];
@@ -654,7 +668,8 @@ function InsertionSort({ step }: { step: number }) {
   );
 }
 
-function QuicksortViz({ step }: { step: number }) {
+function QuicksortViz({ step: _step }: { step: number }) {
+  void _step;
   const arr = [30, 10, 50, 20, 40];
   const pivotIdx = 2; 
   return (
@@ -1109,7 +1124,7 @@ function KnapsackViz({ step }: { step: number }) {
             <div key={i} className={`w-10 h-10 flex items-center justify-center rounded text-[10px] font-mono transition-all duration-200 ${
               isActive ? "bg-white text-teal-600 font-bold border border-teal-200" : "bg-gray-50 text-gray-300"
             }`}>
-              {isActive ? (r === 0 || c === 0 ? "0" : Math.floor(Math.random() * 10)) : "?"}
+              {isActive ? (r === 0 || c === 0 ? "0" : ((r * 7 + c * 3) % 10).toString()) : "?"}
             </div>
           );
         })}
@@ -1338,7 +1353,8 @@ function BfsViz({ step }: { step: number }) {
   );
 }
 
-function DfsTreeViz({ step }: { step: number }) {
+function DfsTreeViz({ step: _step }: { step: number }) {
+  void _step;
   return (
     <div className="flex flex-col items-center gap-4 w-full">
       <div className="relative w-64 h-48">
@@ -1361,7 +1377,8 @@ function DfsTreeViz({ step }: { step: number }) {
   );
 }
 
-function BfsTreeViz({ step }: { step: number }) {
+function BfsTreeViz({ step: _step }: { step: number }) {
+  void _step;
   return (
     <div className="flex flex-col items-center gap-4 w-full">
       <div className="relative w-64 h-48">
