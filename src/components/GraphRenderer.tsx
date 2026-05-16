@@ -82,12 +82,13 @@ export function GraphRenderer({ type }: GraphRendererProps) {
         {type === "quicksort" && <QuicksortViz step={step} />}
         {type === "matrix-list" && <MatrixListViz step={step} />}
         {type === "assignment-viz" && <AssignmentViz step={step} />}
+        {type === "tsp-graph" && <TspViz step={step} />}
         {type !== "euclid-gcd" && type !== "linear-flow" && type !== "cartesian-comparison" && 
          type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" &&
          type !== "weighted-graph" && type !== "heap-tree" && type !== "linear-data" && 
          type !== "string-match" && type !== "interpolation-search" && 
          type !== "bubble-sort" && type !== "insertion-sort" && type !== "quicksort" &&
-         type !== "matrix-list" && type !== "assignment-viz" && (
+         type !== "matrix-list" && type !== "assignment-viz" && type !== "tsp-graph" && (
           <div className="text-center">
             <p className="text-sm font-medium text-gray-500">
               Visualization for <code className="rounded bg-gray-200 px-1">{type}</code> coming soon.
@@ -695,6 +696,82 @@ function AssignmentViz({ step }: { step: number }) {
       </div>
       <div className="text-center text-xs font-bold text-gray-400 uppercase">
         {step === 0 ? "Initial state: Unassigned" : "Greedy assignment: Optimal matches found"}
+      </div>
+    </div>
+  );
+}
+
+function TspViz({ step }: { step: number }) {
+  // Cities as coordinates
+  const cities = [
+    { id: "A", x: 100, y: 30 },
+    { id: "B", x: 180, y: 70 },
+    { id: "C", x: 160, y: 160 },
+    { id: "D", x: 60, y: 160 },
+    { id: "E", x: 30, y: 80 },
+  ];
+
+  // Tour order: A -> B -> C -> D -> E -> A
+  const tourEdges = [
+    { from: 0, to: 1, s: 1 },
+    { from: 1, to: 2, s: 2 },
+    { from: 2, to: 3, s: 3 },
+    { from: 3, to: 4, s: 4 },
+    { from: 4, to: 0, s: 5 },
+  ];
+
+  return (
+    <div className="relative w-full max-w-sm h-64">
+      <svg className="w-full h-full" viewBox="0 0 210 200">
+        {/* All possible edges (faint) */}
+        {cities.map((c1, i) =>
+          cities.map((c2, j) =>
+            i < j ? (
+              <line
+                key={`${i}-${j}`}
+                x1={c1.x} y1={c1.y} x2={c2.x} y2={c2.y}
+                stroke="#f1f5f9" strokeWidth="1"
+              />
+            ) : null
+          )
+        )}
+        {/* Tour edges */}
+        {tourEdges.map((e, i) => (
+          <line
+            key={`tour-${i}`}
+            x1={cities[e.from].x} y1={cities[e.from].y}
+            x2={cities[e.to].x} y2={cities[e.to].y}
+            stroke={step >= e.s ? "#0d9488" : "#e5e7eb"}
+            strokeWidth={step >= e.s ? "3" : "1"}
+            className="transition-all duration-500"
+          />
+        ))}
+        {/* City nodes */}
+        {cities.map((c, i) => (
+          <React.Fragment key={i}>
+            <circle
+              cx={c.x} cy={c.y} r="14"
+              className={`transition-all duration-500 ${
+                step >= i + 1 || (i === 0 && step >= 0)
+                  ? "fill-teal-500 stroke-teal-200 stroke-[3]"
+                  : "fill-white stroke-gray-200 stroke-[2]"
+              }`}
+            />
+            <text
+              x={c.x} y={c.y + 4} textAnchor="middle"
+              className={`text-[10px] font-bold ${
+                step >= i + 1 || (i === 0 && step >= 0) ? "fill-white" : "fill-gray-400"
+              }`}
+            >
+              {c.id}
+            </text>
+          </React.Fragment>
+        ))}
+      </svg>
+      <div className="absolute bottom-0 left-0 right-0 text-center">
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          {step === 0 ? "Select starting city" : step >= 5 ? "Tour complete! Return to A" : `Step ${step}: Travel to city ${cities[tourEdges[step - 1]?.to]?.id}`}
+        </p>
       </div>
     </div>
   );
