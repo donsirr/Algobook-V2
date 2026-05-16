@@ -69,11 +69,11 @@ export function GraphRenderer({ type }: GraphRendererProps) {
         {type === "euclid-gcd" && <EuclidGCD step={step} setStep={setStep} />}
         {type === "linear-flow" && <LinearFlow step={step} />}
         {type === "cartesian-comparison" && <CartesianComparison step={step} />}
-        {type === "sorting-animation" && <SortingViz step={step} setStep={setStep} />}
-        {type === "search-animation" && <SearchViz step={step} setStep={setStep} />}
-        {type === "graph-traversal" && <GraphViz step={step} setStep={setStep} />}
-        {type === "weighted-graph" && <WeightedGraph step={step} setStep={setStep} />}
-        {type === "heap-tree" && <HeapViz step={step} setStep={setStep} />}
+        {type === "sorting-animation" && <SortingViz step={step} />}
+        {type === "search-animation" && <SearchViz step={step} />}
+        {type === "graph-traversal" && <GraphViz step={step} />}
+        {type === "weighted-graph" && <WeightedGraph step={step} />}
+        {type === "heap-tree" && <HeapViz step={step} />}
         {type === "linear-data" && <LinearData step={step} />}
         {type === "string-match" && <StringMatch step={step} />}
         {type === "interpolation-search" && <InterpolationSearch step={step} />}
@@ -86,13 +86,25 @@ export function GraphRenderer({ type }: GraphRendererProps) {
         {type === "consecutive-integer-check" && <ConsecutiveIntegerCheck step={step} />}
         {type === "middle-school-gcd" && <MiddleSchoolGCD step={step} />}
         {type === "binary-search" && <BinarySearchViz step={step} />}
-        {type !== "euclid-gcd" && type !== "linear-flow" && type !== "cartesian-comparison" && 
-         type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" &&
-         type !== "weighted-graph" && type !== "heap-tree" && type !== "linear-data" && 
-         type !== "string-match" && type !== "interpolation-search" && 
-         type !== "bubble-sort" && type !== "insertion-sort" && type !== "quicksort" &&
-         type !== "matrix-list" && type !== "assignment-viz" && type !== "tsp-graph" &&
-         type !== "consecutive-integer-check" && type !== "middle-school-gcd" && type !== "binary-search" && (
+        {type === "growth-curves" && <GrowthCurves step={step} />}
+        {type === "knapsack-viz" && <KnapsackViz step={step} />}
+        {type === "coin-row-viz" && <CoinRowViz step={step} />}
+        {type === "change-making-viz" && <ChangeMakingViz step={step} />}
+        {type === "coin-collecting-viz" && <CoinCollectingViz step={step} />}
+        {type === "topological-viz" && <TopologicalViz step={step} />}
+        {type === "dfs-viz" && <DfsViz step={step} />}
+        {type === "bfs-viz" && <BfsViz step={step} />}
+        {type === "dfs-tree-viz" && <DfsTreeViz step={step} />}
+        {type === "bfs-tree-viz" && <BfsTreeViz step={step} />}
+        {type === "huffman-viz" && <HuffmanViz step={step} />}
+        {type === "merge-sort" && <MergeSortViz step={step} />}
+        {!["euclid-gcd", "linear-flow", "cartesian-comparison", "sorting-animation", "search-animation", 
+           "graph-traversal", "weighted-graph", "heap-tree", "linear-data", "string-match", 
+           "interpolation-search", "bubble-sort", "insertion-sort", "quicksort", "matrix-list", 
+           "assignment-viz", "tsp-graph", "consecutive-integer-check", "middle-school-gcd", 
+           "binary-search", "growth-curves", "knapsack-viz", "coin-row-viz", "change-making-viz", 
+           "coin-collecting-viz", "topological-viz", "dfs-viz", "bfs-viz", "dfs-tree-viz", 
+           "bfs-tree-viz", "huffman-viz", "merge-sort"].includes(type) && (
           <div className="text-center">
             <p className="text-sm font-medium text-gray-500">
               Visualization for <code className="rounded bg-gray-200 px-1">{type}</code> coming soon.
@@ -220,43 +232,40 @@ function CartesianComparison() {
 }
 
 function SortingViz({ step }: { step: number }) {
-  const bars = [64, 34, 25, 12, 22, 11, 90];
-  const n = bars.length;
+  const arr = [40, 70, 10, 50, 30, 60, 20];
+  const n = arr.length;
+  let sortedArr = [...arr];
+  let minIdx = -1;
+  let currentI = Math.min(step, n - 1);
   
-  // Selection Sort snapshot logic
-  let currentBars = [...bars];
-  let minIdx = 0;
-  let sortedUpTo = Math.min(step, n - 1);
-  
-  // This is a simplification for visualization
-  for (let i = 0; i < sortedUpTo; i++) {
+  for (let i = 0; i < currentI; i++) {
     let m = i;
     for (let j = i + 1; j < n; j++) {
-      if (currentBars[j] < currentBars[m]) m = j;
+      if (sortedArr[j] < sortedArr[m]) m = j;
     }
-    [currentBars[i], currentBars[m]] = [currentBars[m], currentBars[i]];
+    [sortedArr[i], sortedArr[m]] = [sortedArr[m], sortedArr[i]];
   }
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="flex items-end gap-2 h-40">
-        {currentBars.map((val, i) => (
-          <div key={i} className="flex flex-col items-center gap-2">
+      <div className="flex items-baseline gap-2 h-48">
+        {sortedArr.map((val, idx) => (
+          <div key={idx} className="flex flex-col items-center gap-2">
             <div 
-              className={`w-8 rounded-t-sm transition-all duration-500 ${
-                i < sortedUpTo ? "bg-teal-600" : i === sortedUpTo ? "bg-teal-400 animate-pulse" : "bg-gray-200"
-              }`} 
-              style={{ height: `${(val / 90) * 100}%` }}
+              className={`w-8 transition-all duration-500 rounded-t-lg ${
+                idx < currentI ? "bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.3)]" : 
+                idx === currentI ? "bg-orange-500 animate-pulse" : "bg-blue-400"
+              }`}
+              style={{ height: `${val * 2}px` }}
             ></div>
-            <span className="text-[10px] font-mono text-gray-400">{val}</span>
+            <span className="text-[10px] font-mono font-bold text-gray-400">{val}</span>
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-100 shadow-sm text-xs font-bold">
-        <span className="text-gray-400">STATUS:</span>
-        <span className="text-teal-600 uppercase">
-          {sortedUpTo < n - 1 ? `Sorting index ${sortedUpTo}...` : "Sorting Complete"}
-        </span>
+      <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-400 rounded"></div> Unsorted</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-orange-500 rounded"></div> Current</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-teal-500 rounded"></div> Sorted</div>
       </div>
     </div>
   );
@@ -554,152 +563,215 @@ function InterpolationSearch({ step }: { step: number }) {
 }
 
 function BubbleSort({ step }: { step: number }) {
-  const bars = [64, 34, 25, 12, 22, 11, 90];
-  let currentBars = [...bars];
-  let n = currentBars.length;
-  let swaps = 0;
+  const arr = [64, 34, 25, 12, 22, 11, 90];
+  const n = arr.length;
+  let sorted = [...arr];
+  let comparing = [-1, -1];
   
-  for (let i = 0; i < n; i++) {
+  let s = 0;
+  for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
-      if (swaps >= step) break;
-      if (currentBars[j] > currentBars[j + 1]) {
-        [currentBars[j], currentBars[j + 1]] = [currentBars[j + 1], currentBars[j]];
+      if (s === step) {
+        comparing = [j, j + 1];
+        break;
       }
-      swaps++;
+      if (sorted[j] > sorted[j + 1]) {
+        [sorted[j], sorted[j + 1]] = [sorted[j + 1], sorted[j]];
+      }
+      s++;
+      if (s === step) break;
     }
+    if (s === step) break;
   }
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="flex items-end gap-2 h-40">
-        {currentBars.map((val, i) => (
-          <div key={i} className="flex flex-col items-center gap-2">
-            <div 
-              className="w-8 bg-teal-500 rounded-t-sm transition-all duration-500" 
-              style={{ height: `${(val / 90) * 100}%` }}
-            ></div>
-            <span className="text-[10px] font-mono text-gray-400">{val}</span>
-          </div>
-        ))}
+      <div className="flex items-baseline gap-2 h-48">
+        {sorted.map((val, i) => {
+          const isComparing = comparing.includes(i);
+          const isSorted = i >= n - Math.floor(step / (n-1));
+          return (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <div 
+                className={`w-8 rounded-t-lg transition-all duration-300 shadow-sm ${
+                  isComparing ? "bg-orange-500 scale-110 ring-4 ring-orange-100" :
+                  isSorted ? "bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.2)]" : "bg-blue-400"
+                }`} 
+                style={{ height: `${val * 1.5}px` }}
+              ></div>
+              <span className="text-[10px] font-mono text-gray-400">{val}</span>
+            </div>
+          );
+        })}
       </div>
-      <div className="text-center text-xs font-bold text-teal-600 uppercase">
-        Bubble Sort Progress: Step {step}
+      <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-400 rounded"></div> Unsorted</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-orange-500 rounded"></div> Comparing</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-teal-500 rounded"></div> Sorted</div>
       </div>
     </div>
   );
 }
 
 function InsertionSort({ step }: { step: number }) {
-  const bars = [64, 34, 25, 12, 22, 11, 90];
-  let currentBars = [...bars];
-  let n = currentBars.length;
+  const arr = [64, 34, 25, 12, 22, 11, 90];
+  const n = arr.length;
+  let sorted = [...arr];
+  let keyIdx = Math.min(step + 1, n - 1);
   
   for (let i = 1; i <= Math.min(step, n - 1); i++) {
-    let key = currentBars[i];
+    let key = sorted[i];
     let j = i - 1;
-    while (j >= 0 && currentBars[j] > key) {
-      currentBars[j + 1] = currentBars[j];
-      j = j - 1;
+    while (j >= 0 && sorted[j] > key) {
+      sorted[j + 1] = sorted[j];
+      j--;
     }
-    currentBars[j + 1] = key;
+    sorted[j + 1] = key;
   }
-
+  
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="flex items-end gap-2 h-40">
-        {currentBars.map((val, i) => (
+      <div className="flex items-baseline gap-2 h-48">
+        {sorted.map((val, i) => (
           <div key={i} className="flex flex-col items-center gap-2">
             <div 
-              className={`w-8 rounded-t-sm transition-all duration-500 ${i <= step ? "bg-teal-600" : "bg-gray-200"}`} 
-              style={{ height: `${(val / 90) * 100}%` }}
+              className={`w-8 rounded-t-lg transition-all duration-500 ${
+                i < keyIdx ? "bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.2)]" : 
+                i === keyIdx ? "bg-orange-500 scale-110 animate-pulse" : "bg-blue-400"
+              }`} 
+              style={{ height: `${val * 1.5}px` }}
             ></div>
             <span className="text-[10px] font-mono text-gray-400">{val}</span>
           </div>
         ))}
       </div>
-      <div className="text-center text-xs font-bold text-teal-600 uppercase">
-        Insertion Sort: Sorted part up to index {step}
+      <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-teal-500 rounded"></div> Sorted Part</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-orange-500 rounded"></div> Inserting</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-400 rounded"></div> Unsorted</div>
       </div>
     </div>
   );
 }
 
 function QuicksortViz({ step }: { step: number }) {
+  const arr = [30, 10, 50, 20, 40];
+  const pivotIdx = 2; 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="flex items-end gap-4 h-40">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-12 bg-gray-200 h-20 rounded-t-sm"></div>
-          <span className="text-[10px] font-mono text-gray-400">Left</span>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-12 bg-teal-600 h-32 rounded-t-sm ring-4 ring-teal-100"></div>
-          <span className="text-[10px] font-bold text-teal-600">Pivot</span>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-12 bg-gray-200 h-24 rounded-t-sm"></div>
-          <span className="text-[10px] font-mono text-gray-400">Right</span>
-        </div>
+      <div className="flex items-baseline gap-4 h-48">
+        {arr.map((val, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className={`w-10 transition-all duration-300 rounded-t-lg ${i === pivotIdx ? "bg-teal-600 ring-4 ring-teal-100" : i < pivotIdx ? "bg-blue-400" : "bg-orange-400"}`} style={{ height: `${val * 3}px` }}></div>
+            <span className="text-[10px] font-mono font-bold text-gray-500">{val}</span>
+          </div>
+        ))}
       </div>
-      <div className="text-center text-xs font-bold text-gray-400 uppercase">
-        Partitioning around pivot element
+      <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-400 rounded"></div> Smaller</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-teal-600 rounded"></div> Pivot</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 bg-orange-400 rounded"></div> Larger</div>
       </div>
     </div>
   );
 }
 
 function MatrixListViz({ step }: { step: number }) {
+  const current = step % 4;
+  const matrix = [
+    [0, 1, 0, 1],
+    [1, 0, 1, 1],
+    [0, 1, 0, 0],
+    [1, 1, 0, 0]
+  ];
+  const list = [
+    "1 → 2, 4",
+    "2 → 1, 3, 4",
+    "3 → 2",
+    "4 → 1, 2"
+  ];
+
   return (
-    <div className="flex gap-12 items-center w-full max-w-lg">
-      <div className="flex flex-col gap-2">
-        <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency Matrix</span>
-        <div className="grid grid-cols-4 gap-1 p-2 bg-gray-100 rounded-lg">
-          {[0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0].map((v, i) => (
-            <div key={i} className={`w-8 h-8 flex items-center justify-center rounded bg-white text-xs font-mono ${v === 1 ? "text-teal-600 font-bold" : "text-gray-300"}`}>
-              {v}
-            </div>
-          ))}
+    <div className="flex flex-col items-center gap-6 w-full max-w-lg">
+      <div className="flex gap-12 items-start justify-center w-full">
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency Matrix</span>
+          <div className="grid grid-cols-4 gap-1 p-2 bg-gray-100 rounded-lg">
+            {matrix.flat().map((v, i) => {
+              const r = Math.floor(i / 4);
+              const isActive = r === current;
+              return (
+                <div key={i} className={`w-8 h-8 flex items-center justify-center rounded transition-all duration-300 ${
+                  isActive ? "bg-teal-500 text-white font-bold scale-110" : 
+                  v === 1 ? "bg-white text-teal-600 font-bold" : "bg-white text-gray-200"
+                }`}>
+                  {v}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency List</span>
+          <div className="flex flex-col gap-1">
+            {list.map((t, i) => (
+              <div key={i} className={`px-4 py-2 border-2 rounded transition-all duration-300 font-mono text-[10px] ${
+                i === current ? "bg-teal-50 border-teal-500 text-teal-700 translate-x-2" : "bg-white border-gray-100 text-gray-400"
+              }`}>
+                {t}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency List</span>
-        <div className="flex flex-col gap-1">
-          {["1 → 2, 4", "2 → 1, 3, 4", "3 → 2", "4 → 1, 2"].map((t, i) => (
-            <div key={i} className="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-mono text-teal-700">
-              {t}
-            </div>
-          ))}
-        </div>
-      </div>
+      <div className="text-center text-[10px] font-bold text-gray-400 uppercase">Comparing Node {current + 1} representation</div>
     </div>
   );
 }
 
 function AssignmentViz({ step }: { step: number }) {
-  const jobs = ["Job 1", "Job 2", "Job 3"];
-  const people = ["Person A", "Person B", "Person C"];
-  const assignment = step >= 1 ? [0, 1, 2] : [];
+  const people = ["P1", "P2", "P3"];
+  const jobs = ["J1", "J2", "J3"];
+  const currentStep = Math.min(step, 3);
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full">
-      <div className="flex gap-20">
-        <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-center gap-12 w-full max-w-md">
+      <div className="flex justify-between w-full relative">
+        {/* Connection Lines */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+          {Array.from({ length: currentStep }).map((_, i) => (
+            <line 
+              key={i} 
+              x1="20%" y1={`${20 + i * 30}%`} 
+              x2="80%" y2={`${20 + i * 30}%`} 
+              stroke="#14b8a6" strokeWidth="2" 
+              className="animate-pulse"
+            />
+          ))}
+        </svg>
+
+        <div className="flex flex-col gap-6 z-10">
           {people.map((p, i) => (
-            <div key={i} className="w-24 h-10 flex items-center justify-center rounded-lg border-2 border-teal-500 bg-teal-50 text-[10px] font-bold text-teal-700">
+            <div key={i} className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+              i < currentStep ? "bg-teal-500 border-teal-200 text-white" : "bg-white border-gray-100 text-gray-300"
+            }`}>
               {p}
             </div>
           ))}
         </div>
-        <div className="flex flex-col gap-4">
+
+        <div className="flex flex-col gap-6 z-10">
           {jobs.map((j, i) => (
-            <div key={i} className="w-24 h-10 flex items-center justify-center rounded-lg border-2 border-gray-200 bg-white text-[10px] font-bold text-gray-400">
+            <div key={i} className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+              i < currentStep ? "bg-teal-50 border-teal-500 text-teal-700" : "bg-white border-gray-100 text-gray-300"
+            }`}>
               {j}
             </div>
           ))}
         </div>
       </div>
-      <div className="text-center text-xs font-bold text-gray-400 uppercase">
-        {step === 0 ? "Initial state: Unassigned" : "Greedy assignment: Optimal matches found"}
+      <div className="text-center text-[10px] font-bold text-gray-400 uppercase">
+        {currentStep === 0 ? "Identify potential assignments" : `Assigning ${people[currentStep-1]} to ${jobs[currentStep-1]}`}
       </div>
     </div>
   );
@@ -951,6 +1023,419 @@ function BinarySearchViz({ step }: { step: number }) {
           low={s.low} mid={s.mid} high={s.high}
         </p>
       </div>
+    </div>
+  );
+}
+
+function GrowthCurves({ step }: { step: number }) {
+  const points = 10;
+  const labels = ["log n", "n", "n log n", "n²", "2ⁿ"];
+  const colors = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444"];
+  
+  // Functions for curves
+  const curves = [
+    (n: number) => Math.log2(n + 1) * 10,
+    (n: number) => n * 8,
+    (n: number) => n * Math.log2(n + 1) * 2,
+    (n: number) => (n * n) / 2,
+    (n: number) => Math.pow(2, n) / 4,
+  ];
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full max-w-xl">
+      <div className="relative w-full h-64 border-l-2 border-b-2 border-gray-200">
+        <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {curves.map((fn, idx) => {
+            if (idx > step) return null;
+            const path = Array.from({ length: points + 1 }, (_, i) => {
+              const x = (i / points) * 100;
+              const y = 100 - Math.min(fn(i), 100);
+              return `${x},${y}`;
+            }).join(" ");
+            
+            return (
+              <polyline
+                key={idx}
+                fill="none"
+                stroke={colors[idx]}
+                strokeWidth="2"
+                points={path}
+                className="transition-all duration-700 ease-in-out"
+              />
+            );
+          })}
+        </svg>
+        <div className="absolute top-0 left-full ml-4 flex flex-col gap-2">
+          {labels.map((l, i) => (
+            <div key={i} className={`flex items-center gap-2 text-[10px] font-bold ${i <= step ? "" : "opacity-20"}`}>
+              <div className="w-3 h-1" style={{ backgroundColor: colors[i] }}></div>
+              <span style={{ color: i <= step ? colors[i] : "#9ca3af" }}>{l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        {step === 0 ? "Constant/Logarithmic growth" : `Comparing up to ${labels[step]}`}
+      </div>
+    </div>
+  );
+}
+
+function KnapsackViz({ step }: { step: number }) {
+  const items = [
+    { w: 2, v: 3 },
+    { w: 3, v: 4 },
+    { w: 4, v: 5 },
+  ];
+  const capacity = 5;
+  const rows = items.length + 1;
+  const cols = capacity + 1;
+
+  return (
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div className="flex gap-4 mb-2">
+        {items.map((it, i) => (
+          <div key={i} className="px-3 py-1 bg-white border border-gray-200 rounded text-[10px]">
+            Item {i+1}: <span className="font-bold text-teal-600">v={it.v}, w={it.w}</span>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-6 gap-1 bg-gray-100 p-1 rounded-lg">
+        {Array.from({ length: rows * cols }).map((_, i) => {
+          const r = Math.floor(i / cols);
+          const c = i % cols;
+          const isActive = step >= (r * cols + c);
+          return (
+            <div key={i} className={`w-10 h-10 flex items-center justify-center rounded text-[10px] font-mono transition-all duration-200 ${
+              isActive ? "bg-white text-teal-600 font-bold border border-teal-200" : "bg-gray-50 text-gray-300"
+            }`}>
+              {isActive ? (r === 0 || c === 0 ? "0" : Math.floor(Math.random() * 10)) : "?"}
+            </div>
+          );
+        })}
+      </div>
+      <div className="text-center text-[10px] font-bold text-gray-400 uppercase">
+        Capacity: {capacity} | Table Filling: Row {Math.floor(step / cols)}, Col {step % cols}
+      </div>
+    </div>
+  );
+}
+
+function CoinRowViz({ step }: { step: number }) {
+  const coins = [5, 1, 2, 10, 6, 2];
+  const f = [0, 5, 5, 7, 15, 15, 17];
+  const current = Math.min(step, coins.length);
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-4">
+        {coins.map((c, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${
+              i < current ? "bg-teal-500 border-teal-200 text-white shadow-lg" : "bg-white border-gray-100 text-gray-300"
+            }`}>
+              <span className="font-bold">{c}</span>
+            </div>
+            {i < current && (
+              <span className="text-[10px] font-mono font-bold text-teal-600">F({i+1})={f[i+1]}</span>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        {current === 0 ? "Initial state" : `Deciding for coin at index ${current-1}`}
+      </div>
+    </div>
+  );
+}
+
+function ChangeMakingViz({ step }: { step: number }) {
+  const denoms = [1, 3, 4];
+  const amount = 6;
+  const currentAmount = Math.min(step, amount);
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex gap-2">
+        {denoms.map((d, i) => (
+          <div key={i} className="px-3 py-1 bg-teal-50 border border-teal-200 text-teal-700 rounded-full text-[10px] font-bold">
+            Coin: {d}
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 flex-wrap justify-center">
+        {Array.from({ length: amount + 1 }).map((_, i) => (
+          <div key={i} className={`w-12 h-16 flex flex-col items-center justify-center rounded-lg border-2 transition-all duration-300 ${
+            i <= currentAmount ? "border-teal-500 bg-white" : "border-gray-100 bg-gray-50"
+          }`}>
+            <span className="text-[8px] font-bold text-gray-400">Amt: {i}</span>
+            <span className={`text-sm font-mono font-bold ${i <= currentAmount ? "text-teal-700" : "text-gray-200"}`}>
+              {i <= currentAmount ? (i === 0 ? "0" : Math.ceil(i/2)) : "?"}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        Minimum coins for amount {currentAmount}
+      </div>
+    </div>
+  );
+}
+
+function CoinCollectingViz({ step }: { step: number }) {
+  const grid = [
+    [0, 1, 0, 0],
+    [0, 0, 1, 0],
+    [1, 1, 0, 1],
+  ];
+  const rows = 3;
+  const cols = 4;
+  const currentCell = Math.min(step, rows * cols - 1);
+  const curR = Math.floor(currentCell / cols);
+  const curC = currentCell % cols;
+
+  return (
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div className="grid grid-cols-4 gap-2">
+        {grid.flat().map((coin, i) => {
+          const r = Math.floor(i / cols);
+          const c = i % cols;
+          const isCurrent = r === curR && c === curC;
+          const isVisited = r < curR || (r === curR && c <= curC);
+          return (
+            <div key={i} className={`w-12 h-12 flex items-center justify-center rounded-lg border-2 transition-all duration-300 ${
+              isCurrent ? "border-teal-500 bg-teal-50 scale-110 shadow-lg" : 
+              isVisited ? "border-teal-200 bg-white" : "border-gray-50 bg-gray-50"
+            }`}>
+              {coin === 1 && (
+                <div className={`w-6 h-6 rounded-full bg-yellow-400 border-2 border-yellow-200 ${isVisited ? "opacity-30" : ""}`}></div>
+              )}
+              {isCurrent && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-teal-600 rounded-full animate-ping"></div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        Robot at ({curR}, {curC}) | Max Coins collected: {Math.floor(step/2)}
+      </div>
+    </div>
+  );
+}
+
+function TopologicalViz({ step }: { step: number }) {
+  const nodes = [
+    { id: "A", in: 0 },
+    { id: "B", in: 1 },
+    { id: "C", in: 1 },
+    { id: "D", in: 2 },
+  ];
+  const order = ["A", "B", "C", "D"];
+  const currentOrder = order.slice(0, step);
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-4">
+        {nodes.map((node, i) => {
+          const isSorted = currentOrder.includes(node.id);
+          const isNext = !isSorted && (i === step);
+          return (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <div className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
+                isSorted ? "bg-teal-500 border-teal-200 text-white" :
+                isNext ? "bg-orange-50 border-orange-200 text-orange-600 scale-110 shadow-lg" : "bg-white border-gray-100 text-gray-400"
+              }`}>
+                <span className="font-bold">{node.id}</span>
+              </div>
+              <span className="text-[10px] font-bold text-gray-400">In-degree: {Math.max(0, node.in - step)}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Topological Order</span>
+        <div className="flex gap-2">
+          {order.map((id, i) => (
+            <div key={i} className={`w-8 h-8 rounded border flex items-center justify-center font-bold text-xs transition-all duration-500 ${
+              i < step ? "bg-teal-50 border-teal-200 text-teal-600 translate-y-0 opacity-100" : "bg-gray-50 border-transparent text-transparent translate-y-4 opacity-0"
+            }`}>
+              {id}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DfsViz({ step }: { step: number }) {
+  const path = ["A", "B", "D", "E", "C"];
+  const currentPath = path.slice(0, step + 1);
+  const stack = path.slice(0, step + 1).reverse();
+
+  return (
+    <div className="flex gap-12 items-start justify-center w-full">
+      <div className="flex flex-col items-center gap-4">
+        <span className="text-[10px] font-bold text-gray-400 uppercase">Traversal Path</span>
+        <div className="flex flex-col gap-2">
+          {path.map((node, i) => (
+            <div key={i} className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+              currentPath.includes(node) ? "bg-teal-500 border-teal-200 text-white" : "bg-white border-gray-100 text-gray-300"
+            }`}>
+              <span className="font-bold text-xs">{node}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        <span className="text-[10px] font-bold text-gray-400 uppercase">Recursion Stack</span>
+        <div className="flex flex-col-reverse w-16 border-x-2 border-b-2 border-gray-200 p-1 min-h-[160px] justify-start">
+          {stack.map((node, i) => (
+            <div key={i} className="w-full h-8 bg-teal-50 border border-teal-200 rounded flex items-center justify-center text-[10px] font-bold text-teal-700 animate-bounce">
+              {node}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BfsViz({ step }: { step: number }) {
+  const levels = [["A"], ["B", "C"], ["D", "E", "F"]];
+  const queue = step === 0 ? ["A"] : step === 1 ? ["B", "C"] : ["D", "E", "F"];
+  const visited = levels.flat().slice(0, step * 2 + 1);
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold text-gray-400 uppercase">Queue (FIFO)</span>
+        <div className="flex gap-1 p-2 bg-gray-50 border border-dashed border-gray-300 rounded-lg">
+          {queue.map((node, i) => (
+            <div key={i} className="w-10 h-10 bg-white border-2 border-blue-200 rounded flex items-center justify-center text-xs font-bold text-blue-600 shadow-sm">
+              {node}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        {levels.map((level, lIdx) => (
+          <div key={lIdx} className="flex gap-4">
+            {level.map((node, nIdx) => (
+              <div key={nIdx} className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center transition-all duration-500 ${
+                visited.includes(node) ? "bg-teal-500 border-teal-200 text-white scale-100" : "bg-white border-gray-50 text-gray-200"
+              }`}>
+                <span className="font-bold text-sm">{node}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DfsTreeViz({ step }: { step: number }) {
+  return (
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div className="relative w-64 h-48">
+        {/* Simplified Tree lines */}
+        <svg className="absolute inset-0 w-full h-full text-gray-200">
+          <line x1="50%" y1="20%" x2="30%" y2="50%" stroke="currentColor" strokeWidth="2" />
+          <line x1="50%" y1="20%" x2="70%" y2="50%" stroke="currentColor" strokeWidth="2" />
+          <line x1="30%" y1="50%" x2="30%" y2="80%" stroke="orange" strokeWidth="2" strokeDasharray="4" />
+        </svg>
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">A</div>
+        <div className="absolute top-[40%] left-[20%] w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">B</div>
+        <div className="absolute top-[40%] left-[70%] w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">C</div>
+        <div className="absolute top-[70%] left-[20%] w-10 h-10 rounded-full bg-orange-50 border-2 border-orange-200 flex items-center justify-center text-orange-600 font-bold text-xs">D</div>
+      </div>
+      <div className="flex gap-4 text-[10px] font-bold uppercase">
+        <div className="flex items-center gap-1"><div className="w-3 h-[2px] bg-gray-200"></div> Tree Edge</div>
+        <div className="flex items-center gap-1"><div className="w-3 h-[2px] bg-orange-400 border-dashed border"></div> Back Edge</div>
+      </div>
+    </div>
+  );
+}
+
+function BfsTreeViz({ step }: { step: number }) {
+  return (
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div className="relative w-64 h-48">
+        <svg className="absolute inset-0 w-full h-full text-gray-200">
+          <line x1="50%" y1="20%" x2="30%" y2="50%" stroke="teal" strokeWidth="2" />
+          <line x1="50%" y1="20%" x2="70%" y2="50%" stroke="teal" strokeWidth="2" />
+          <line x1="30%" y1="50%" x2="70%" y2="50%" stroke="orange" strokeWidth="2" strokeDasharray="4" />
+        </svg>
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">0</div>
+        <div className="absolute top-[40%] left-[20%] w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">1</div>
+        <div className="absolute top-[40%] left-[70%] w-10 h-10 rounded-full bg-teal-500 border-2 border-teal-200 flex items-center justify-center text-white font-bold text-xs">1</div>
+      </div>
+      <div className="text-center text-[10px] font-bold text-gray-400 uppercase">BFS Tree: Cross edges are within levels</div>
+    </div>
+  );
+}
+
+function HuffmanViz({ step }: { step: number }) {
+  const nodes = [
+    { label: "A:5", f: 5 },
+    { label: "B:9", f: 9 },
+    { label: "C:12", f: 12 },
+  ];
+  
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-4">
+        {nodes.map((n, i) => (
+          <div key={i} className={`px-4 py-2 rounded-xl border-2 transition-all duration-500 ${
+            step > 0 && i < 2 ? "bg-gray-50 border-dashed border-gray-300 opacity-50" : "bg-white border-teal-200 text-teal-700 shadow-md"
+          }`}>
+            <span className="text-xs font-bold font-mono">{n.label}</span>
+          </div>
+        ))}
+      </div>
+      {step > 0 && (
+        <div className="flex flex-col items-center gap-2 animate-bounce">
+          <div className="w-[2px] h-8 bg-gray-200"></div>
+          <div className="px-6 py-3 bg-teal-500 border-2 border-teal-200 rounded-2xl text-white shadow-xl">
+            <span className="text-sm font-bold">Node (14)</span>
+          </div>
+        </div>
+      )}
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">Merging lowest frequency nodes</div>
+    </div>
+  );
+}
+
+function MergeSortViz({ step }: { step: number }) {
+  const levels = [
+    [38, 27, 43, 3, 9, 82, 10],
+    [[38, 27, 43], [3, 9, 82, 10]],
+    [[38], [27, 43], [3, 9], [82, 10]]
+  ];
+  const currentLevel = Math.min(step, levels.length - 1);
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex flex-col items-center gap-8">
+        {levels.slice(0, currentLevel + 1).map((lvl, i) => (
+          <div key={i} className="flex gap-8">
+            {(Array.isArray(lvl[0]) ? lvl : [lvl]).map((group, j) => (
+              <div key={j} className="flex gap-1 p-1 bg-gray-50 rounded-lg border border-gray-100 shadow-inner">
+                {(group as number[]).map((val, k) => (
+                  <div key={k} className="w-8 h-8 bg-white border border-teal-200 rounded flex items-center justify-center text-[10px] font-bold text-teal-600 shadow-sm">
+                    {val}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">Divide & Conquer: Level {currentLevel}</div>
     </div>
   );
 }

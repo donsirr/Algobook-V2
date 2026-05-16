@@ -3,7 +3,7 @@ title: DFS Tree
 description: The tree formed by a DFS traversal.
 module: COMBINATORIAL PROBLEMS
 order: 415
-visualizationType: graph-traversal
+visualizationType: dfs-tree-viz
 ---
 # DFS Tree
 

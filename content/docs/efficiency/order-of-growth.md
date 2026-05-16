@@ -1,6 +1,6 @@
 ---
 title: Order of Growth
-description: Comparing how fast different functions grow.
+description: Comparing how fast different functions grow as n increases.
 module: EFFICIENCY
 order: 140
 visualizationType: growth-curves
@@ -11,23 +11,17 @@ Order of growth defines how the execution time increases as the input size grows
 
 ### 📊 Ranking (Slowest to Fastest Growth)
 
-| Rank | Notation | Name | Behaviour |
+| Icon | Notation | Name | Behavior |
 | :---: | :---: | :--- | :--- |
-| 🟢 | $O(1)$ | Constant | Stays flat regardless of input |
-| 🟢 | $O(\log n)$ | Logarithmic | Grows very slowly; halving each step |
-| 🟡 | $O(n)$ | Linear | Grows proportionally to input |
-| 🟡 | $O(n \log n)$ | Linearithmic | Slightly faster than linear |
-| 🟠 | $O(n^2)$ | Quadratic | Nested loops over input |
-| 🔴 | $O(2^n)$ | Exponential | Doubles with each added element |
-| 🔴 | $O(n!)$ | Factorial | All permutations; grows astronomically |
+| 🟢 | $1$ | Constant | Time stays the same regardless of input size. |
+| 🟢 | $\log n$ | Logarithmic | Time increases very slowly (e.g., doubling $n$ adds 1 step). |
+| 🟡 | $n$ | Linear | Time increases proportionally to input size. |
+| 🟡 | $n \log n$ | Linearithmic | Standard for efficient sorting algorithms. |
+| 🟠 | $n^2$ | Quadratic | Time increases with the square of the input (nested loops). |
+| 🔴 | $2^n$ | Exponential | Time doubles with each additional element (intractable). |
+| 🔴 | $n!$ | Factorial | Grows astronomically (permutations). |
 
-### Practical Impact
-For $n = 100$:
-- $\log n \approx 7$
-- $n = 100$
-- $n \log n \approx 664$
-- $n^2 = 10{,}000$
-- $2^n \approx 1.27 \times 10^{30}$
-- $n! \approx 9.33 \times 10^{157}$
+### 🚀 Why it Matters
+As $n$ becomes large, the higher-order term dominates. An $O(n^2)$ algorithm might be faster than $O(n)$ for $n=2$, but it will be vastly slower for $n=1,000,000$.
 
-The difference between polynomial and exponential growth is the boundary between **tractable** and **intractable** problems.
+The goal of algorithm design is often to move a solution from a higher growth class (like $O(2^n)$) to a lower one (like $O(n^2)$ or $O(n)$).

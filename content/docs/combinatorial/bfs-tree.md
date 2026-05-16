@@ -3,7 +3,7 @@ title: BFS Tree
 description: The tree formed by a BFS traversal.
 module: COMBINATORIAL PROBLEMS
 order: 425
-visualizationType: graph-traversal
+visualizationType: bfs-tree-viz
 ---
 # BFS Tree
 

@@ -3,7 +3,7 @@ title: Knapsack Problem
 description: Solving the optimization problem of filling a knapsack with maximum value.
 module: DYNAMIC PROGRAMMING
 order: 800
-visualizationType: linear-flow
+visualizationType: knapsack-viz
 ---
 
 # Knapsack Problem (0/1)

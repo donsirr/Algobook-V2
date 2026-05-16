@@ -3,7 +3,7 @@ title: Breadth-First Search
 description: Traverse a graph level by level with a queue.
 module: COMBINATORIAL PROBLEMS
 order: 400
-visualizationType: graph-traversal
+visualizationType: bfs-viz
 ---
 
 # Breadth-First Search (BFS)

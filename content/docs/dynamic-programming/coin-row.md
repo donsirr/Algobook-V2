@@ -3,7 +3,7 @@ title: Coin-Row Problem
 description: Picking non-adjacent coins for maximum value.
 module: DYNAMIC PROGRAMMING
 order: 810
-visualizationType: linear-flow
+visualizationType: coin-row-viz
 ---
 # Coin-Row Problem
 

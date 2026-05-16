@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-05-16
+
+### Added
+- **Bespoke Pedagogical Visualizations**: Replaced generic templates with context-aware interactive components for 20+ algorithms:
+    - **Dynamic Programming**: Knapsack table filling, Coin-row decision flow, Change-making grid, and Coin-collecting robot path.
+    - **Searching**: Functional Binary Search (halving logic) and Interpolation Search.
+    - **Sorting**: Colorful, state-aware visualizers for Selection, Bubble, Insertion, Merge, and Quick Sort (using "Comparing", "Sorted", and "Pivot" indicators).
+    - **Efficiency**: "Growth Curves" multi-line graph comparing complexity classes ($O(\log n)$ to $O(2^n)$).
+    - **Graph Algorithms**: Distinct DFS/BFS traversals, DFS/BFS tree/back-edge classification, and Topological Sort (in-degree tracking).
+    - **Greedy**: Huffman tree merging process.
+- **Enhanced Documentation Content**: 
+    - Expanded `Order of Growth` with a descriptive ranking table and efficiency icons.
+    - Detailed `Efficiency Classes` with formal definitions and examples.
+    - Concrete examples (Subset Sum) for `Exhaustive Search`.
+- **Site-wide Quality Audit**: Verified every entry in `MODULES.md` for interactive functionality and context alignment.
+
+### Fixed
+- **LaTeX Consistency**: site-wide audit fixed broken math delimiters and character escaping in `string-matching.md`, `interpolation-search.md`, and `problem-reduction.md`.
+- **Placeholder Cleanup**: Removed non-interactive visualization sections from conceptual pages where irrelevant (Welcome, Asymptotic Notations).
+
 ## [0.2.0] - 2026-05-16
 
 ### Added

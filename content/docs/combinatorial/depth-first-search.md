@@ -3,7 +3,7 @@ title: Depth-First Search
 description: Exploring as far as possible before backtracking.
 module: COMBINATORIAL PROBLEMS
 order: 410
-visualizationType: graph-traversal
+visualizationType: dfs-viz
 ---
 # Depth-First Search (DFS)
 

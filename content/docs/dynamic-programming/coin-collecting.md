@@ -3,7 +3,7 @@ title: Coin-Collecting Problem
 description: Collecting maximum coins on a grid path.
 module: DYNAMIC PROGRAMMING
 order: 830
-visualizationType: linear-flow
+visualizationType: coin-collecting-viz
 ---
 # Coin-Collecting Problem
 

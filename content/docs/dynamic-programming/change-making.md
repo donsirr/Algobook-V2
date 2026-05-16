@@ -3,7 +3,7 @@ title: Change-making Problem
 description: Minimum coins to make a given amount.
 module: DYNAMIC PROGRAMMING
 order: 820
-visualizationType: linear-flow
+visualizationType: change-making-viz
 ---
 # Change-Making Problem
 
