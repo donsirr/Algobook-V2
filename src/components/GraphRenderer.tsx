@@ -83,12 +83,16 @@ export function GraphRenderer({ type }: GraphRendererProps) {
         {type === "matrix-list" && <MatrixListViz step={step} />}
         {type === "assignment-viz" && <AssignmentViz step={step} />}
         {type === "tsp-graph" && <TspViz step={step} />}
+        {type === "consecutive-integer-check" && <ConsecutiveIntegerCheck step={step} />}
+        {type === "middle-school-gcd" && <MiddleSchoolGCD step={step} />}
+        {type === "binary-search" && <BinarySearchViz step={step} />}
         {type !== "euclid-gcd" && type !== "linear-flow" && type !== "cartesian-comparison" && 
          type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" &&
          type !== "weighted-graph" && type !== "heap-tree" && type !== "linear-data" && 
          type !== "string-match" && type !== "interpolation-search" && 
          type !== "bubble-sort" && type !== "insertion-sort" && type !== "quicksort" &&
-         type !== "matrix-list" && type !== "assignment-viz" && type !== "tsp-graph" && (
+         type !== "matrix-list" && type !== "assignment-viz" && type !== "tsp-graph" &&
+         type !== "consecutive-integer-check" && type !== "middle-school-gcd" && type !== "binary-search" && (
           <div className="text-center">
             <p className="text-sm font-medium text-gray-500">
               Visualization for <code className="rounded bg-gray-200 px-1">{type}</code> coming soon.
@@ -771,6 +775,180 @@ function TspViz({ step }: { step: number }) {
       <div className="absolute bottom-0 left-0 right-0 text-center">
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
           {step === 0 ? "Select starting city" : step >= 5 ? "Tour complete! Return to A" : `Step ${step}: Travel to city ${cities[tourEdges[step - 1]?.to]?.id}`}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ConsecutiveIntegerCheck({ step }: { step: number }) {
+  const m = 48, n = 18;
+  const minVal = Math.min(m, n);
+  // Steps: t goes from min(m,n) down. We check: does t divide m? does t divide n?
+  // t=18: 48%18=12 ✗ | t=17: 48%17=14 ✗ | ... | t=6: 48%6=0 ✓, 18%6=0 ✓ → GCD!
+  const checks: { t: number; divM: boolean; divN: boolean; isGCD: boolean }[] = [];
+  for (let t = minVal; t >= 1; t--) {
+    const divM = m % t === 0;
+    const divN = n % t === 0;
+    checks.push({ t, divM, divN, isGCD: divM && divN });
+    if (divM && divN) break;
+  }
+
+  const visibleChecks = checks.slice(0, step + 1);
+  const currentCheck = visibleChecks[visibleChecks.length - 1];
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex gap-8 text-center">
+        <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
+          <span className="text-[10px] font-bold text-gray-400 uppercase block">m</span>
+          <span className="text-xl font-mono font-bold text-gray-700">{m}</span>
+        </div>
+        <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
+          <span className="text-[10px] font-bold text-gray-400 uppercase block">n</span>
+          <span className="text-xl font-mono font-bold text-gray-700">{n}</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 max-h-48 overflow-y-auto w-full max-w-md">
+        {visibleChecks.map((c, i) => (
+          <div key={i} className={`flex items-center justify-between px-4 py-2 rounded-lg border transition-all duration-300 ${
+            c.isGCD ? "border-teal-400 bg-teal-50 ring-2 ring-teal-100" :
+            i === visibleChecks.length - 1 ? "border-gray-300 bg-white" : "border-gray-100 bg-gray-50/50"
+          }`}>
+            <span className="font-mono font-bold text-sm text-gray-700">t = {c.t}</span>
+            <div className="flex gap-3 text-xs font-mono">
+              <span className={c.divM ? "text-teal-600 font-bold" : "text-red-400"}>
+                {m} % {c.t} = {m % c.t} {c.divM ? "✓" : "✗"}
+              </span>
+              {c.divM && (
+                <span className={c.divN ? "text-teal-600 font-bold" : "text-red-400"}>
+                  {n} % {c.t} = {n % c.t} {c.divN ? "✓" : "✗"}
+                </span>
+              )}
+            </div>
+            {c.isGCD && (
+              <span className="rounded-full bg-teal-500 px-3 py-1 text-[10px] font-bold text-white">GCD = {c.t}</span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">
+        {currentCheck?.isGCD ? `Found GCD = ${currentCheck.t}` : `Trying t = ${currentCheck?.t}...`}
+      </div>
+    </div>
+  );
+}
+
+function MiddleSchoolGCD({ step }: { step: number }) {
+  const m = 60, n = 24;
+  // Step 0: Show m and n
+  // Step 1: Prime factorization of m = 2² × 3 × 5
+  // Step 2: Prime factorization of n = 2³ × 3
+  // Step 3: Common factors: 2² × 3 = 12
+  const steps = [
+    { label: "Start", detail: `Find GCD(${m}, ${n})` },
+    { label: "Factor m", detail: `${m} = 2² × 3 × 5` },
+    { label: "Factor n", detail: `${n} = 2³ × 3` },
+    { label: "Common", detail: "Common: 2² × 3 = 12" },
+  ];
+
+  const currentStep = Math.min(step, steps.length - 1);
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex gap-3">
+        {steps.map((s, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className={`flex flex-col items-center gap-1 px-4 py-3 rounded-xl border-2 transition-all duration-500 min-w-[120px] ${
+              i <= currentStep
+                ? i === currentStep
+                  ? "border-teal-500 bg-teal-50 shadow-md shadow-teal-100"
+                  : "border-teal-300 bg-teal-50/50"
+                : "border-gray-100 bg-gray-50"
+            }`}>
+              <span className={`text-[10px] font-bold uppercase ${i <= currentStep ? "text-teal-600" : "text-gray-300"}`}>
+                {s.label}
+              </span>
+              <span className={`text-sm font-mono font-bold ${i <= currentStep ? "text-gray-800" : "text-gray-300"}`}>
+                {s.detail}
+              </span>
+            </div>
+            {i < steps.length - 1 && (
+              <div className={`h-[2px] w-6 transition-all duration-500 ${i < currentStep ? "bg-teal-400" : "bg-gray-200"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center text-xs font-bold uppercase tracking-widest">
+        {currentStep === steps.length - 1 ? (
+          <span className="text-teal-600">GCD(60, 24) = 12</span>
+        ) : (
+          <span className="text-gray-400">Step {currentStep + 1} of {steps.length}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BinarySearchViz({ step }: { step: number }) {
+  const arr = [5, 12, 17, 23, 38, 44, 56, 72, 81, 95];
+  const target = 44;
+
+  // Binary search steps (pre-computed for target=44 in this array):
+  // Step 0: low=0, high=9, mid=4 (arr[4]=38 < 44, go right)
+  // Step 1: low=5, high=9, mid=7 (arr[7]=72 > 44, go left)
+  // Step 2: low=5, high=6, mid=5 (arr[5]=44 == 44, found!)
+  const searchSteps = [
+    { low: 0, high: 9, mid: 4, comparison: "38 < 44 → search right half" },
+    { low: 5, high: 9, mid: 7, comparison: "72 > 44 → search left half" },
+    { low: 5, high: 6, mid: 5, comparison: "44 = 44 → found!" },
+  ];
+
+  const currentStep = Math.min(step, searchSteps.length - 1);
+  const s = searchSteps[currentStep];
+  const found = currentStep === searchSteps.length - 1;
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-1">
+        {arr.map((val, i) => {
+          const isInRange = i >= s.low && i <= s.high;
+          const isMid = i === s.mid;
+          const isEliminated = !isInRange;
+
+          return (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div
+                className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-mono font-bold text-sm transition-all duration-300 ${
+                  isMid
+                    ? found
+                      ? "border-teal-500 bg-teal-500 text-white ring-4 ring-teal-100"
+                      : "border-teal-500 bg-teal-50 text-teal-700 ring-4 ring-teal-50"
+                    : isEliminated
+                    ? "border-gray-100 bg-gray-50 text-gray-200"
+                    : "border-gray-200 bg-white text-gray-500"
+                }`}
+              >
+                {val}
+              </div>
+              <div className="flex gap-1">
+                {i === s.low && <span className="text-[8px] font-bold text-blue-500">L</span>}
+                {i === s.mid && <span className="text-[8px] font-bold text-teal-600">M</span>}
+                {i === s.high && <span className="text-[8px] font-bold text-orange-500">H</span>}
+                {i !== s.low && i !== s.mid && i !== s.high && <span className="text-[8px] text-transparent">.</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="text-center">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target: {target}</p>
+        <p className="mt-1 text-sm font-medium text-teal-600">{s.comparison}</p>
+        <p className="mt-1 text-[10px] font-mono text-gray-400">
+          low={s.low} mid={s.mid} high={s.high}
         </p>
       </div>
     </div>

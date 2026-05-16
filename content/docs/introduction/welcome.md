@@ -3,7 +3,6 @@ title: Welcome to Algobook
 description: Your exhaustive guide to algorithms and data structures.
 module: INTRODUCTION
 order: 10
-visualizationType: linear-flow
 ---
 
 # Welcome to Algobook

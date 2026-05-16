@@ -3,7 +3,7 @@ title: Binary Search
 description: Find a target in sorted data by cutting the search space in half.
 module: SEARCHING
 order: 210
-visualizationType: search-animation
+visualizationType: binary-search
 ---
 # Binary Search
 

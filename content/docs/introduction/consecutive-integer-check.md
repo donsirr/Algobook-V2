@@ -3,7 +3,7 @@ title: Consecutive Integer Check Algorithm
 description: An algorithm to find GCD by checking consecutive integers.
 module: INTRODUCTION
 order: 30
-visualizationType: linear-flow
+visualizationType: consecutive-integer-check
 ---
 # Consecutive Integer Check Algorithm
 

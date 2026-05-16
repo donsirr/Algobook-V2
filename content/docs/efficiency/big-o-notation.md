@@ -3,12 +3,12 @@ title: Big O Notation
 description: Understanding the asymptotic upper bound of algorithm complexity.
 module: EFFICIENCY
 order: 100
-visualizationType: cartesian-comparison
+visualizationType: growth-curves
 ---
 
 # Big O Notation
 
-Big O notation is a mathematical notation that describes the limiting behavior of a function when the argument tends towards a particular value or infinity. In computer science, it is used to classify algorithms according to how their run time or space requirements grow as the input size grows.
+Big O notation is a mathematical notation that describes the limiting behavior of a function when the argument tends towards infinity. In computer science, it classifies algorithms by how their run time or space requirements grow as the input size grows.
 
 ### Why use Big O?
 It allows us to compare the efficiency of different algorithms in a way that is independent of hardware or specific implementation details.

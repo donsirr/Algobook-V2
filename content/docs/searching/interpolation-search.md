@@ -7,11 +7,15 @@ visualizationType: interpolation-search
 ---
 # Interpolation Search
 
-Interpolation Search is an improvement over Binary Search for instances where the values in a sorted array are uniformly distributed.
+Interpolation Search is an improvement over Binary Search for instances where the values in a sorted array are **uniformly distributed**. Instead of always going to the middle, it estimates the target's position based on its value.
 
 ### The Formula
- = low + \left\lfloor \frac{(target - arr[low]) \cdot (high - low)}{arr[high] - arr[low]} \right\rfloor$
+$$pos = low + \left\lfloor \frac{(target - arr[low]) \cdot (high - low)}{arr[high] - arr[low]} \right\rfloor$$
+
+### How it differs from Binary Search
+- **Binary Search** always checks the middle: $mid = \lfloor (low + high) / 2 \rfloor$
+- **Interpolation Search** estimates a position proportional to the target's value within the range.
 
 ### Efficiency
-- **Average Case**: (\log \log n)$
-- **Worst Case**: (n)$ (when distribution is highly non-uniform)
+- **Average Case**: $O(\log \log n)$ for uniformly distributed data
+- **Worst Case**: $O(n)$ when distribution is highly non-uniform

@@ -3,7 +3,7 @@ title: Middle School Procedure
 description: The prime factorization method for GCD.
 module: INTRODUCTION
 order: 40
-visualizationType: linear-flow
+visualizationType: middle-school-gcd
 ---
 # Middle School Procedure
 
