@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0] - 2026-05-16
 
 ### Added
+- **Interactive Visualization Controls**: Replaced static examples with a fully interactable stepping system. 
+    - Added "Next", "Previous", and "Reset" controls to all visualizations.
+    - Implemented step-by-step logic for Euclid GCD, Sorting, Searching, BFS Traversal, MST construction, and Heap insertion.
+    - Added progress tracking (e.g., "Step X of concept execution").
 - **Full Curriculum Implementation**: Populated all major modules (INTRODUCTION, EFFICIENCY, SEARCHING, SORTING, etc.) with detailed descriptions and pseudocode.
 - **Dynamic Visualization Engine**: Expanded `GraphRenderer` to support:
     - `sorting-animation` (Bar charts)

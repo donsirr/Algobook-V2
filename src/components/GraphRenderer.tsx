@@ -1,38 +1,82 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 export interface GraphRendererProps {
   type?: string;
 }
 
 export function GraphRenderer({ type }: GraphRendererProps) {
+  const [step, setStep] = useState(0);
+
   if (!type) return null;
 
+  const handleNext = (maxSteps: number) => {
+    setStep((s) => Math.min(s + 1, maxSteps));
+  };
+
+  const handlePrev = () => {
+    setStep((s) => Math.max(s - 1, 0));
+  };
+
+  const handleReset = () => {
+    setStep(0);
+  };
+
   return (
-    <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50/50 p-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">
-          Interactive Visualization
-        </h3>
-        <div className="flex gap-2">
-          <div className="h-2 w-2 rounded-full bg-teal-500"></div>
-          <div className="h-2 w-2 rounded-full bg-gray-300"></div>
-          <div className="h-2 w-2 rounded-full bg-gray-300"></div>
+    <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50/50 p-8 shadow-sm">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">
+            Interactive Visualization
+          </h3>
+          <p className="mt-1 text-[10px] font-medium text-teal-600 uppercase tracking-tight">
+            Step {step + 1} of concept execution
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            <button
+              onClick={handlePrev}
+              disabled={step === 0}
+              className="flex h-10 w-10 items-center justify-center transition hover:bg-gray-50 disabled:opacity-30"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <div className="w-[1px] bg-gray-100"></div>
+            <button
+              onClick={handleReset}
+              className="px-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:bg-gray-50 transition"
+            >
+              Reset
+            </button>
+            <div className="w-[1px] bg-gray-100"></div>
+            <button
+              onClick={() => handleNext(10)} 
+              className="flex h-10 w-10 items-center justify-center transition hover:bg-gray-50"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="flex min-h-[300px] items-center justify-center">
-        {type === "euclid-gcd" && <EuclidGCD />}
-        {type === "linear-flow" && <LinearFlow />}
-        {type === "cartesian-comparison" && <CartesianComparison />}
-        {type === "sorting-animation" && <SortingViz />}
-        {type === "search-animation" && <SearchViz />}
-        {type === "graph-traversal" && <GraphViz />}
-        {type === "weighted-graph" && <WeightedGraph />}
-        {type === "heap-tree" && <HeapViz />}
+      <div className="flex min-h-[340px] items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-white/50 p-6">
+        {type === "euclid-gcd" && <EuclidGCD step={step} setStep={setStep} />}
+        {type === "linear-flow" && <LinearFlow step={step} />}
+        {type === "cartesian-comparison" && <CartesianComparison step={step} />}
+        {type === "sorting-animation" && <SortingViz step={step} setStep={setStep} />}
+        {type === "search-animation" && <SearchViz step={step} setStep={setStep} />}
+        {type === "graph-traversal" && <GraphViz step={step} setStep={setStep} />}
+        {type === "weighted-graph" && <WeightedGraph step={step} setStep={setStep} />}
+        {type === "heap-tree" && <HeapViz step={step} setStep={setStep} />}
         {type !== "euclid-gcd" && type !== "linear-flow" && type !== "cartesian-comparison" && 
-         type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" && (
+         type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" &&
+         type !== "weighted-graph" && type !== "heap-tree" && (
           <div className="text-center">
             <p className="text-sm font-medium text-gray-500">
               Visualization for <code className="rounded bg-gray-200 px-1">{type}</code> coming soon.
@@ -44,7 +88,7 @@ export function GraphRenderer({ type }: GraphRendererProps) {
   );
 }
 
-function EuclidGCD() {
+function EuclidGCD({ step, setStep }: { step: number; setStep: (s: number) => void }) {
   const steps = [
     { a: 48, b: 18, remainder: 12 },
     { a: 18, b: 12, remainder: 6 },
@@ -52,9 +96,11 @@ function EuclidGCD() {
     { a: 6, b: 0, remainder: null, isResult: true },
   ];
 
+  const currentSteps = steps.slice(0, step + 1);
+
   return (
     <div className="flex flex-col items-center gap-6">
-      {steps.map((step, i) => (
+      {currentSteps.map((s, i) => (
         <React.Fragment key={i}>
           <div
             className={`flex items-center gap-4 rounded-xl border p-4 transition-all duration-500 ${
@@ -157,17 +203,34 @@ function CartesianComparison() {
   );
 }
 
-function SortingViz() {
+function SortingViz({ step }: { step: number }) {
   const bars = [64, 34, 25, 12, 22, 11, 90];
+  const n = bars.length;
   
+  // Selection Sort snapshot logic
+  let currentBars = [...bars];
+  let minIdx = 0;
+  let sortedUpTo = Math.min(step, n - 1);
+  
+  // This is a simplification for visualization
+  for (let i = 0; i < sortedUpTo; i++) {
+    let m = i;
+    for (let j = i + 1; j < n; j++) {
+      if (currentBars[j] < currentBars[m]) m = j;
+    }
+    [currentBars[i], currentBars[m]] = [currentBars[m], currentBars[i]];
+  }
+
   return (
     <div className="flex flex-col items-center gap-8 w-full">
       <div className="flex items-end gap-2 h-40">
-        {bars.map((val, i) => (
+        {currentBars.map((val, i) => (
           <div key={i} className="flex flex-col items-center gap-2">
             <div 
-              className="w-8 bg-teal-500 rounded-t-sm transition-all duration-500" 
-              style={{ height: `${val}%` }}
+              className={`w-8 rounded-t-sm transition-all duration-500 ${
+                i < sortedUpTo ? "bg-teal-600" : i === sortedUpTo ? "bg-teal-400 animate-pulse" : "bg-gray-200"
+              }`} 
+              style={{ height: `${(val / 90) * 100}%` }}
             ></div>
             <span className="text-[10px] font-mono text-gray-400">{val}</span>
           </div>
@@ -175,16 +238,19 @@ function SortingViz() {
       </div>
       <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-100 shadow-sm text-xs font-bold">
         <span className="text-gray-400">STATUS:</span>
-        <span className="text-teal-600 uppercase">Scanning Minimum Element...</span>
+        <span className="text-teal-600 uppercase">
+          {sortedUpTo < n - 1 ? `Sorting index ${sortedUpTo}...` : "Sorting Complete"}
+        </span>
       </div>
     </div>
   );
 }
 
-function SearchViz() {
+function SearchViz({ step }: { step: number }) {
   const elements = [10, 23, 45, 70, 11, 15, 88];
   const target = 70;
-  const currentIndex = 3;
+  const currentIndex = Math.min(step, elements.findIndex(e => e === target));
+  const isFound = elements[currentIndex] === target;
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
@@ -194,7 +260,9 @@ function SearchViz() {
             key={i} 
             className={`w-12 h-12 flex items-center justify-center rounded-lg border-2 font-mono font-bold transition-all duration-300 ${
               i === currentIndex 
-                ? "border-teal-500 bg-teal-50 text-teal-700 ring-4 ring-teal-100" 
+                ? isFound 
+                  ? "border-teal-500 bg-teal-50 text-teal-700 ring-4 ring-teal-100" 
+                  : "border-teal-500 bg-white text-teal-600 ring-4 ring-teal-50"
                 : "border-gray-200 bg-white text-gray-400"
             }`}
           >
@@ -204,92 +272,163 @@ function SearchViz() {
       </div>
       <div className="text-center">
         <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target: {target}</p>
-        <p className="mt-1 text-sm font-medium text-teal-600">Found match at index {currentIndex}!</p>
+        <p className="mt-1 text-sm font-medium text-teal-600">
+          {isFound ? `Found match at index ${currentIndex}!` : `Checking index ${currentIndex}...`}
+        </p>
       </div>
     </div>
   );
 }
 
-function GraphViz() {
+function GraphViz({ step }: { step: number }) {
+  const nodes = [
+    { id: "A", x: 100, y: 40, s: 0 },
+    { id: "B", x: 60, y: 100, s: 1 },
+    { id: "C", x: 140, y: 100, s: 2 },
+    { id: "D", x: 40, y: 160, s: 3 },
+    { id: "E", x: 80, y: 160, s: 4 },
+  ];
+
+  const edges = [
+    { from: [100, 40], to: [60, 100], s: 1 },
+    { from: [100, 40], to: [140, 100], s: 2 },
+    { from: [60, 100], to: [40, 160], s: 3 },
+    { from: [60, 100], to: [80, 160], s: 4 },
+  ];
+
   return (
     <div className="relative w-full max-w-sm h-64">
-      {/* Simple Node-Link SVG */}
       <svg className="w-full h-full" viewBox="0 0 200 200">
-        {/* Edges */}
-        <line x1="100" y1="40" x2="60" y2="100" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="100" y1="40" x2="140" y2="100" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="60" y1="100" x2="40" y2="160" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="60" y1="100" x2="80" y2="160" stroke="#e5e7eb" strokeWidth="2" />
+        {edges.map((e, i) => (
+          <line 
+            key={i} 
+            x1={e.from[0]} y1={e.from[1]} x2={e.to[0]} y2={e.to[1]} 
+            stroke={step >= e.s ? "#0d9488" : "#e5e7eb"} 
+            strokeWidth={step >= e.s ? "3" : "2"} 
+            className="transition-all duration-500"
+          />
+        ))}
 
-        {/* Nodes */}
-        <circle cx="100" cy="40" r="15" className="fill-teal-500 stroke-teal-200 stroke-[4]" />
-        <circle cx="60" cy="100" r="15" className="fill-white stroke-teal-500 stroke-[2]" />
-        <circle cx="140" cy="100" r="15" className="fill-white stroke-gray-300 stroke-[2]" />
-        <circle cx="40" cy="160" r="12" className="fill-white stroke-gray-200 stroke-[2]" />
-        <circle cx="80" cy="160" r="12" className="fill-white stroke-gray-200 stroke-[2]" />
-
-        <text x="100" y="44" textAnchor="middle" className="text-[10px] font-bold fill-white">A</text>
-        <text x="60" y="104" textAnchor="middle" className="text-[10px] font-bold fill-teal-600">B</text>
-        <text x="140" y="104" textAnchor="middle" className="text-[10px] font-bold fill-gray-400">C</text>
+        {nodes.map((n, i) => (
+          <React.Fragment key={i}>
+            <circle 
+              cx={n.x} cy={n.y} r="15" 
+              className={`transition-all duration-500 ${
+                step >= n.s ? "fill-teal-500 stroke-teal-200 stroke-[4]" : "fill-white stroke-gray-200 stroke-[2]"
+              }`} 
+            />
+            <text 
+              x={n.x} y={n.y + 4} textAnchor="middle" 
+              className={`text-[10px] font-bold transition-all duration-500 ${
+                step >= n.s ? "fill-white" : "fill-gray-400"
+              }`}
+            >
+              {n.id}
+            </text>
+          </React.Fragment>
+        ))}
       </svg>
       <div className="absolute bottom-0 left-0 right-0 text-center">
-        <p className="text-[10px] font-bold text-gray-400 uppercase">Breadth-First Search Traversal</p>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          {step === 0 ? "Starting at Root A" : `Step ${step}: Exploring neighbors`}
+        </p>
       </div>
     </div>
   );
 }
 
-function WeightedGraph() {
+function WeightedGraph({ step }: { step: number }) {
+  const edges = [
+    { x1: 50, y1: 50, x2: 150, y2: 50, w: 4, s: 1 },
+    { x1: 50, y1: 50, x2: 50, y2: 150, w: 8, s: 5 },
+    { x1: 150, y1: 50, x2: 150, y2: 150, w: 5, s: 2 },
+    { x1: 50, y1: 150, x2: 150, y2: 150, w: 11, s: 4 },
+    { x1: 50, y1: 50, x2: 150, y2: 150, w: 7, s: 3 },
+  ];
+
   return (
     <div className="relative w-full max-w-sm h-64">
       <svg className="w-full h-full" viewBox="0 0 200 200">
-        <line x1="50" y1="50" x2="150" y2="50" stroke="#0d9488" strokeWidth="4" />
-        <line x1="50" y1="50" x2="50" y2="150" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="150" y1="50" x2="150" y2="150" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="50" y1="150" x2="150" y2="150" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="50" y1="50" x2="150" y2="150" stroke="#e5e7eb" strokeWidth="2" />
+        {edges.map((e, i) => (
+          <React.Fragment key={i}>
+            <line 
+              x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} 
+              stroke={step >= e.s ? "#0d9488" : "#e5e7eb"} 
+              strokeWidth={step >= e.s ? "4" : "2"} 
+              className="transition-all duration-500"
+            />
+            <text 
+              x={(e.x1 + e.x2) / 2 + (e.x1 === e.x2 ? 10 : 0)} 
+              y={(e.y1 + e.y2) / 2 - (e.y1 === e.y2 ? 0 : 10)} 
+              textAnchor="middle" 
+              className={`text-[12px] font-bold transition-all duration-500 ${
+                step >= e.s ? "fill-teal-800" : "fill-gray-400"
+              }`}
+            >
+              {e.w}
+            </text>
+          </React.Fragment>
+        ))}
 
-        <circle cx="50" cy="50" r="15" className="fill-teal-500" />
-        <circle cx="150" cy="50" r="15" className="fill-teal-500" />
-        <circle cx="50" cy="150" r="15" className="fill-white stroke-gray-300" />
-        <circle cx="150" cy="150" r="15" className="fill-white stroke-gray-300" />
-
-        <text x="100" y="45" textAnchor="middle" className="text-[12px] font-bold fill-teal-800">4</text>
-        <text x="45" y="105" textAnchor="middle" className="text-[12px] font-bold fill-gray-400">8</text>
-        <text x="155" y="105" textAnchor="middle" className="text-[12px] font-bold fill-gray-400">5</text>
-        <text x="100" y="155" textAnchor="middle" className="text-[12px] font-bold fill-gray-400">11</text>
-        <text x="105" y="105" textAnchor="middle" className="text-[12px] font-bold fill-gray-400 rotate-45">7</text>
+        <circle cx="50" cy="50" r="15" className="fill-teal-500 shadow-lg" />
+        <circle cx="150" cy="50" r="15" className={step >= 1 ? "fill-teal-500" : "fill-white stroke-gray-200"} />
+        <circle cx="150" cy="150" r="15" className={step >= 2 ? "fill-teal-500" : "fill-white stroke-gray-200"} />
+        <circle cx="50" cy="150" r="15" className={step >= 4 ? "fill-teal-500" : "fill-white stroke-gray-200"} />
       </svg>
       <div className="absolute bottom-0 left-0 right-0 text-center">
-        <p className="text-[10px] font-bold text-gray-400 uppercase">Prim's Algorithm: MST Construction</p>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          Prim's: {step === 0 ? "Select Start Node" : `Step ${step}: Adding edge to MST`}
+        </p>
       </div>
     </div>
   );
 }
 
-function HeapViz() {
+function HeapViz({ step }: { step: number }) {
+  const nodes = [
+    { v: 90, x: 100, y: 40, s: 0 },
+    { v: 36, x: 60, y: 90, s: 1 },
+    { v: 17, x: 140, y: 90, s: 2 },
+    { v: 25, x: 40, y: 140, s: 3 },
+    { v: 1, x: 80, y: 140, s: 4 },
+  ];
+
+  const edges = [
+    { x1: 100, y1: 40, x2: 60, y2: 90, s: 1 },
+    { x1: 100, y1: 40, x2: 140, y2: 90, s: 2 },
+    { x1: 60, y1: 90, x2: 40, y2: 140, s: 3 },
+    { x1: 60, y1: 90, x2: 80, y2: 140, s: 4 },
+  ];
+
   return (
     <div className="relative w-full max-w-sm h-64">
       <svg className="w-full h-full" viewBox="0 0 200 200">
-        <line x1="100" y1="40" x2="60" y2="90" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="100" y1="40" x2="140" y2="90" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="60" y1="90" x2="40" y2="140" stroke="#e5e7eb" strokeWidth="2" />
-        <line x1="60" y1="90" x2="80" y2="140" stroke="#e5e7eb" strokeWidth="2" />
+        {edges.map((e, i) => (
+          step >= e.s && (
+            <line 
+              key={i} 
+              x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} 
+              stroke="#e5e7eb" strokeWidth="2" 
+              className="transition-all duration-500"
+            />
+          )
+        ))}
 
-        <circle cx="100" cy="40" r="15" className="fill-teal-500" />
-        <circle cx="60" cy="90" r="15" className="fill-teal-500" />
-        <circle cx="140" cy="90" r="15" className="fill-teal-500" />
-        <circle cx="40" cy="140" r="12" className="fill-teal-500" />
-        <circle cx="80" cy="140" r="12" className="fill-teal-500" />
-
-        <text x="100" y="44" textAnchor="middle" className="text-[10px] font-bold fill-white">90</text>
-        <text x="60" y="94" textAnchor="middle" className="text-[10px] font-bold fill-white">36</text>
-        <text x="140" y="94" textAnchor="middle" className="text-[10px] font-bold fill-white">17</text>
-        <text x="40" y="144" textAnchor="middle" className="text-[10px] font-bold fill-white">25</text>
-        <text x="80" y="144" textAnchor="middle" className="text-[10px] font-bold fill-white">1</text>
+        {nodes.map((n, i) => (
+          step >= n.s && (
+            <React.Fragment key={i}>
+              <circle cx={n.x} cy={n.y} r="15" className="fill-teal-500 transition-all duration-500" />
+              <text x={n.x} y={n.y + 4} textAnchor="middle" className="text-[10px] font-bold fill-white">
+                {n.v}
+              </text>
+            </React.Fragment>
+          )
+        ))}
       </svg>
       <div className="absolute bottom-0 left-0 right-0 text-center">
-        <p className="text-[10px] font-bold text-gray-400 uppercase">Max-Heap Data Structure</p>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          {step === 0 ? "Root Node" : `Inserting element...`}
+        </p>
       </div>
     </div>
   );
