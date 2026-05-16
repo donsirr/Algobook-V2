@@ -1,9 +1,9 @@
 ---
 title: Efficiency Classes
-description: Standard complexity categories.
+description: Standard classes.
 module: EFFICIENCY
 order: 190
 visualizationType: cartesian-comparison
 ---
 # Efficiency Classes
-Content coming soon.
+Standard complexity classes like (1)$, (\log n)$, (n)$, (n^2)$, etc.

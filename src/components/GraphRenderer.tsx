@@ -74,9 +74,20 @@ export function GraphRenderer({ type }: GraphRendererProps) {
         {type === "graph-traversal" && <GraphViz step={step} setStep={setStep} />}
         {type === "weighted-graph" && <WeightedGraph step={step} setStep={setStep} />}
         {type === "heap-tree" && <HeapViz step={step} setStep={setStep} />}
+        {type === "linear-data" && <LinearData step={step} />}
+        {type === "string-match" && <StringMatch step={step} />}
+        {type === "interpolation-search" && <InterpolationSearch step={step} />}
+        {type === "bubble-sort" && <BubbleSort step={step} />}
+        {type === "insertion-sort" && <InsertionSort step={step} />}
+        {type === "quicksort" && <QuicksortViz step={step} />}
+        {type === "matrix-list" && <MatrixListViz step={step} />}
+        {type === "assignment-viz" && <AssignmentViz step={step} />}
         {type !== "euclid-gcd" && type !== "linear-flow" && type !== "cartesian-comparison" && 
          type !== "sorting-animation" && type !== "search-animation" && type !== "graph-traversal" &&
-         type !== "weighted-graph" && type !== "heap-tree" && (
+         type !== "weighted-graph" && type !== "heap-tree" && type !== "linear-data" && 
+         type !== "string-match" && type !== "interpolation-search" && 
+         type !== "bubble-sort" && type !== "insertion-sort" && type !== "quicksort" &&
+         type !== "matrix-list" && type !== "assignment-viz" && (
           <div className="text-center">
             <p className="text-sm font-medium text-gray-500">
               Visualization for <code className="rounded bg-gray-200 px-1">{type}</code> coming soon.
@@ -429,6 +440,261 @@ function HeapViz({ step }: { step: number }) {
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
           {step === 0 ? "Root Node" : `Inserting element...`}
         </p>
+      </div>
+    </div>
+  );
+}
+function LinearData({ step }: { step: number }) {
+  const items = ["A", "B", "C", "D", "E"];
+  const currentItems = items.slice(0, step + 1);
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-2">
+        {items.map((val, i) => (
+          <div 
+            key={i} 
+            className={`w-12 h-12 flex items-center justify-center rounded-lg border-2 font-mono font-bold transition-all duration-500 ${
+              i <= step 
+                ? "border-teal-500 bg-teal-50 text-teal-700" 
+                : "border-gray-100 bg-white text-gray-200"
+            }`}
+          >
+            {val}
+          </div>
+        ))}
+      </div>
+      <div className="text-center">
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          Linear Sequence / Array
+        </p>
+        <p className="mt-2 text-sm font-medium text-teal-600">
+          Showing {currentItems.length} element(s)
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function StringMatch({ step }: { step: number }) {
+  const text = "ALGOBOOK";
+  const pattern = "BOOK";
+  const i = Math.min(step, text.length - pattern.length);
+  const matchedLen = text.slice(i, i + pattern.length) === pattern ? pattern.length : 0;
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex flex-col gap-4">
+        {/* Text */}
+        <div className="flex gap-1">
+          {text.split("").map((char, idx) => (
+            <div 
+              key={idx} 
+              className={`w-10 h-10 flex items-center justify-center rounded border-2 font-mono font-bold ${
+                idx >= i && idx < i + pattern.length ? "border-teal-500 bg-teal-50" : "border-gray-100 bg-white"
+              }`}
+            >
+              {char}
+            </div>
+          ))}
+        </div>
+        {/* Pattern */}
+        <div className="flex gap-1" style={{ marginLeft: `${i * 44}px` }}>
+          {pattern.split("").map((char, idx) => (
+            <div 
+              key={idx} 
+              className={`w-10 h-10 flex items-center justify-center rounded border-2 font-mono font-bold border-teal-600 bg-teal-600 text-white`}
+            >
+              {char}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="text-center text-xs font-bold text-gray-500 uppercase tracking-widest">
+        {matchedLen > 0 ? "Match Found!" : `Scanning at index ${i}...`}
+      </div>
+    </div>
+  );
+}
+
+function InterpolationSearch({ step }: { step: number }) {
+  const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  const target = 70;
+  // Formula: pos = low + [(target - arr[low]) * (high - low) / (arr[high] - arr[low])]
+  const pos = 6; // Fixed for 70 in this array
+  const currentPos = step >= 1 ? pos : 0;
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-1">
+        {arr.map((val, i) => (
+          <div 
+            key={i} 
+            className={`w-10 h-10 flex items-center justify-center rounded border-2 font-mono font-bold transition-all ${
+              i === currentPos ? "border-teal-500 bg-teal-50 text-teal-700 ring-2 ring-teal-100" : "border-gray-100 bg-white text-gray-300"
+            }`}
+          >
+            {val}
+          </div>
+        ))}
+      </div>
+      <div className="text-center">
+        <p className="text-[10px] font-bold text-gray-400 uppercase">Estimated position calculation</p>
+        <p className="mt-2 text-sm font-medium text-teal-600">
+          Target {target} estimated at index {pos}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function BubbleSort({ step }: { step: number }) {
+  const bars = [64, 34, 25, 12, 22, 11, 90];
+  let currentBars = [...bars];
+  let n = currentBars.length;
+  let swaps = 0;
+  
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n - i - 1; j++) {
+      if (swaps >= step) break;
+      if (currentBars[j] > currentBars[j + 1]) {
+        [currentBars[j], currentBars[j + 1]] = [currentBars[j + 1], currentBars[j]];
+      }
+      swaps++;
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex items-end gap-2 h-40">
+        {currentBars.map((val, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div 
+              className="w-8 bg-teal-500 rounded-t-sm transition-all duration-500" 
+              style={{ height: `${(val / 90) * 100}%` }}
+            ></div>
+            <span className="text-[10px] font-mono text-gray-400">{val}</span>
+          </div>
+        ))}
+      </div>
+      <div className="text-center text-xs font-bold text-teal-600 uppercase">
+        Bubble Sort Progress: Step {step}
+      </div>
+    </div>
+  );
+}
+
+function InsertionSort({ step }: { step: number }) {
+  const bars = [64, 34, 25, 12, 22, 11, 90];
+  let currentBars = [...bars];
+  let n = currentBars.length;
+  
+  for (let i = 1; i <= Math.min(step, n - 1); i++) {
+    let key = currentBars[i];
+    let j = i - 1;
+    while (j >= 0 && currentBars[j] > key) {
+      currentBars[j + 1] = currentBars[j];
+      j = j - 1;
+    }
+    currentBars[j + 1] = key;
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex items-end gap-2 h-40">
+        {currentBars.map((val, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div 
+              className={`w-8 rounded-t-sm transition-all duration-500 ${i <= step ? "bg-teal-600" : "bg-gray-200"}`} 
+              style={{ height: `${(val / 90) * 100}%` }}
+            ></div>
+            <span className="text-[10px] font-mono text-gray-400">{val}</span>
+          </div>
+        ))}
+      </div>
+      <div className="text-center text-xs font-bold text-teal-600 uppercase">
+        Insertion Sort: Sorted part up to index {step}
+      </div>
+    </div>
+  );
+}
+
+function QuicksortViz({ step }: { step: number }) {
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex items-end gap-4 h-40">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-12 bg-gray-200 h-20 rounded-t-sm"></div>
+          <span className="text-[10px] font-mono text-gray-400">Left</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-12 bg-teal-600 h-32 rounded-t-sm ring-4 ring-teal-100"></div>
+          <span className="text-[10px] font-bold text-teal-600">Pivot</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-12 bg-gray-200 h-24 rounded-t-sm"></div>
+          <span className="text-[10px] font-mono text-gray-400">Right</span>
+        </div>
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        Partitioning around pivot element
+      </div>
+    </div>
+  );
+}
+
+function MatrixListViz({ step }: { step: number }) {
+  return (
+    <div className="flex gap-12 items-center w-full max-w-lg">
+      <div className="flex flex-col gap-2">
+        <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency Matrix</span>
+        <div className="grid grid-cols-4 gap-1 p-2 bg-gray-100 rounded-lg">
+          {[0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0].map((v, i) => (
+            <div key={i} className={`w-8 h-8 flex items-center justify-center rounded bg-white text-xs font-mono ${v === 1 ? "text-teal-600 font-bold" : "text-gray-300"}`}>
+              {v}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-[10px] font-bold text-gray-400 uppercase">Adjacency List</span>
+        <div className="flex flex-col gap-1">
+          {["1 → 2, 4", "2 → 1, 3, 4", "3 → 2", "4 → 1, 2"].map((t, i) => (
+            <div key={i} className="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-mono text-teal-700">
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AssignmentViz({ step }: { step: number }) {
+  const jobs = ["Job 1", "Job 2", "Job 3"];
+  const people = ["Person A", "Person B", "Person C"];
+  const assignment = step >= 1 ? [0, 1, 2] : [];
+
+  return (
+    <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex gap-20">
+        <div className="flex flex-col gap-4">
+          {people.map((p, i) => (
+            <div key={i} className="w-24 h-10 flex items-center justify-center rounded-lg border-2 border-teal-500 bg-teal-50 text-[10px] font-bold text-teal-700">
+              {p}
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-4">
+          {jobs.map((j, i) => (
+            <div key={i} className="w-24 h-10 flex items-center justify-center rounded-lg border-2 border-gray-200 bg-white text-[10px] font-bold text-gray-400">
+              {j}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="text-center text-xs font-bold text-gray-400 uppercase">
+        {step === 0 ? "Initial state: Unassigned" : "Greedy assignment: Optimal matches found"}
       </div>
     </div>
   );

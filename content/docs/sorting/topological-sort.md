@@ -1,9 +1,14 @@
 ---
 title: Topological Sorting
-description: Linear ordering of vertices in a DAG.
+description: Linear ordering for Directed Acyclic Graphs (DAG).
 module: SORTING
 order: 340
 visualizationType: graph-traversal
 ---
 # Topological Sorting
-Content coming soon.
+
+Topological sorting for Directed Acyclic Graph (DAG) is a linear ordering of vertices such that for every directed edge $, vertex $ comes before $ in the ordering.
+
+### Constraints
+- The graph must be a **DAG** (no cycles).
+- Used in scheduling tasks, resolving dependencies, etc.
