@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Algobook
 
-## Getting Started
+A Markdown-powered Next.js documentation platform for algorithms modules and class lessons.
 
-First, run the development server:
+## Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Edit lessons
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Lessons live in `content/docs`. Add or edit `.md` files there:
 
-## Learn More
+```md
+---
+title: Binary Search
+description: Find a target in sorted data by cutting the search space in half.
+module: Searching
+order: 20
+difficulty: Beginner
+duration: 30 min
+---
 
-To learn more about Next.js, take a look at the following resources:
+# Binary Search
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Lesson content goes here.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Required fields:
 
-## Deploy on Vercel
+- `title`: Lesson title.
+- `description`: Short summary used on cards and metadata.
+- `module`: Sidebar/module group.
+- `order`: Global sort order.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Optional fields:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `difficulty`: Badge shown on the lesson page.
+- `duration`: Estimated lesson length.
+
+## Useful commands
+
+```bash
+npm run lint
+npm run build
+```

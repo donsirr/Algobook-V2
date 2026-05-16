@@ -2,25 +2,146 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111827;
+  --paper: #ffffff;
+  --ink-muted: #6b7280;
+  --ink-soft: #9ca3af;
+  --line: #e5e7eb;
+  --line-strong: #d1d5db;
+  --surface: #f9fafb;
+  --surface-accent: #f0fdfa;
+  --accent: #0f766e;
+  --accent-strong: #115e59;
+  --code: #0f172a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-display), sans-serif;
+}
+
+::selection {
+  background: rgba(20, 184, 166, 0.2);
+}
+
+.lesson-body {
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.lesson-body h1,
+.lesson-body h2,
+.lesson-body h3 {
+  color: var(--foreground);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.lesson-body h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.lesson-body h2 {
+  border-top: 1px solid var(--line);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+}
+
+.lesson-body h3 {
+  font-size: 1.15rem;
+  margin-top: 2rem;
+}
+
+.lesson-body p,
+.lesson-body ul,
+.lesson-body ol,
+.lesson-body blockquote,
+.lesson-body pre,
+.lesson-body table {
+  margin-top: 1.1rem;
+}
+
+.lesson-body ul,
+.lesson-body ol {
+  padding-left: 1.35rem;
+}
+
+.lesson-body li {
+  margin-top: 0.35rem;
+}
+
+.lesson-body a {
+  color: var(--accent);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: rgba(15, 118, 110, 0.28);
+  text-underline-offset: 0.2em;
+}
+
+.lesson-body code {
+  background: #f3f4f6;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  color: #0f172a;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.86em;
+  padding: 0.08rem 0.35rem;
+}
+
+.lesson-body pre {
+  background: var(--code);
+  border: 1px solid #1e293b;
+  border-radius: 0.5rem;
+  color: #e5e7eb;
+  overflow-x: auto;
+  padding: 1.25rem;
+}
+
+.lesson-body pre code {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+
+.lesson-body blockquote {
+  background: var(--surface-accent);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: #134e4a;
+  padding: 1rem 1.25rem;
+}
+
+.lesson-body table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.lesson-body th,
+.lesson-body td {
+  border: 1px solid var(--line);
+  padding: 0.75rem;
+}
+
+.lesson-body th {
+  background: var(--surface);
+  font-family: var(--font-display), sans-serif;
+}
+
+.heading-anchor {
+  text-decoration: none !important;
 }
