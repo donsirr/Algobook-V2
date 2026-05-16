@@ -10,6 +10,7 @@ import {
   getDocSlugs,
   getFirstDoc,
 } from "@/lib/docs";
+import { GraphRenderer } from "@/components/GraphRenderer";
 
 type DocsPageProps = {
   params: Promise<{
@@ -86,7 +87,11 @@ export default async function DocsPage({ params }: DocsPageProps) {
             <nav className="space-y-6">
               {Object.entries(modules).map(([module, lessons]) => (
                 <div key={module}>
-                  <p className="mb-2 px-2 text-xs font-semibold text-gray-500">
+                  <p className={`mb-2 px-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                    module.toUpperCase() === doc.module.toUpperCase() 
+                      ? "text-teal-600" 
+                      : "text-gray-400"
+                  }`}>
                     {module}
                   </p>
                   <div className="space-y-1">
@@ -135,6 +140,7 @@ export default async function DocsPage({ params }: DocsPageProps) {
               className="lesson-body"
               dangerouslySetInnerHTML={{ __html: doc.html }}
             />
+            <GraphRenderer type={doc.visualizationType} />
           </article>
 
           <div className="mx-auto grid max-w-3xl gap-3 border-t border-gray-200 py-6 sm:grid-cols-2">

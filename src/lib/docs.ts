@@ -19,6 +19,7 @@ export type DocFrontmatter = {
   order: number;
   difficulty?: string;
   duration?: string;
+  visualizationType?: string;
 };
 
 export type DocSummary = DocFrontmatter & {
@@ -61,12 +62,13 @@ function assertFrontmatter(data: Record<string, unknown>, slug: string): DocFron
   const order = typeof data.order === "number" ? data.order : 999;
   const difficulty = typeof data.difficulty === "string" ? data.difficulty : undefined;
   const duration = typeof data.duration === "string" ? data.duration : undefined;
+  const visualizationType = typeof data.visualizationType === "string" ? data.visualizationType : undefined;
 
   if (!title || !description) {
     throw new Error(`Missing required frontmatter in content/docs/${slug}.md`);
   }
 
-  return { title, description, module: moduleName, order, difficulty, duration };
+  return { title, description, module: moduleName, order, difficulty, duration, visualizationType };
 }
 
 export function getAllDocs(): DocSummary[] {
